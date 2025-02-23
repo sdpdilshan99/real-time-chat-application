@@ -1,0 +1,11 @@
+@tailwind components;
+
+@layer components{
+    .chat-bubble-container{
+        @apply bg-customColor-bubbleBackground text-black
+    }
+
+    .right-bubble{
+        @apply bg-customColor-rightBackground text-white
+    }
+}

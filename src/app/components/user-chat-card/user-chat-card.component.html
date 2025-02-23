@@ -1,0 +1,29 @@
+@if(config){
+    <div class="user-chat-container cursor-pointer flex w-full gap-x-4 items-center p-2
+    rounded-lg h-full"
+    [ngClass]="{isActive: config.isActive}"
+    (click)="config?.onClick()">
+
+    <img
+    [src]="config.profile || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png'"
+    class="image w-14 h-14"
+    alt="profile picture">
+
+
+        <div class="content-section flex flex-1 flex-col gap-y-2 h-full ">
+            @if(config.fullName){
+                <span class="font-semibold text-lg text-customColor-dark">{{config.fullName}} </span>
+            }
+
+            @if(config.text){
+                <span class="text-sm text-customColor-dark">{{config.text}}</span>
+            }
+        </div>
+
+        @if(config.time){
+            <span class="time-section text-sm text-customColor-timeColor">{{config.time}}</span>
+        }
+
+    </div>
+
+}

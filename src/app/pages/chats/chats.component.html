@@ -1,0 +1,73 @@
+<div class="chat-container flex">
+
+  <div class="user-chat-container bg-gray-300 h-screen w-1/4 p-6 flex
+  flex-col gap-y-10">
+
+    <div class="search-filter-container">
+      <app-search-input (search)="handleSearch($event)"></app-search-input>
+    </div>
+
+    <div class="user-container flex flex-1 flex-col gap-y-2 ">
+      <div class="w-full h-[0.5px] bg-slate-500 opacity-50 rounded-full"></div>
+      @for (item of userChats; track $index) {
+        <app-user-chat-card [config]="item"></app-user-chat-card>
+        <div class="w-full h-[0.5px] bg-slate-500 opacity-50 rounded-full"></div>
+      }
+
+    </div>
+
+    <button (click)="authService.logoutUser()" class="bg-indigo-600 rounded-3xl w-full h-12 flex items-center justify-center
+    text-xl font-semibold text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-300
+    transition-all duration-300 transform hover:scale-105 active:scale-100">
+    Log out
+  </button>
+
+
+  </div>
+
+  @if(senderUser){
+    <div class="chat-details-section h-[100vh] overflow-hidden bg-slate-300 flex
+     flex-1 flex-col" >
+
+      <div class="profile-header flex gap-x-3 px-4 py-4 bg-slate-100">
+        <img class="image w-12 h-12 rounded-full" [src]="senderUser.profile ||
+        'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png'"
+        alt="sender-profile-picture">
+
+        <div class="content-section flex flex-col">
+          @if(senderUser.fullName){
+            <span class="text-customColor-dark font-semibold text-xl">
+              {{senderUser.fullName}}
+            </span>
+          }
+        </div>
+      </div>
+
+      <div class="messages-container flex-1 bg-slate-300 overflow-y-scroll ">
+        <div class="message-list h-full flex flex-col gap-y-2 p-7 ">
+          @for(item of chats; track $index){
+            <app-chat-bubble [config]="item"></app-chat-bubble>
+
+          }
+        </div>
+      </div>
+
+
+      <div class="input-text-section bg-customColor-bubbleBackground flex mx-6 px-4 py-4
+      gap-x-4 rounded-lg my-2 items-center ">
+        <input [formControl] = "messageControl"
+        type="text" class="flex-1 bg-transparent outline-none border-none text-base
+        text-gray-700 placeholder-gray-500 focus:ring-0 focus:outline-none"
+        placeholder="Type a message" aria-label="Type a message" />
+
+        <div (click)="addMessage()" class="send-icon cursor-pointer">
+          <svg  viewBox="0 0 24 24" height="24" width="24" preserveAspectRatio="xMidYMid meet" class="" version="1.1" x="0px" y="0px" enable-background="new 0 0 24 24"><title>send</title><path fill="#4f46e5" d="M1.101,21.757L23.8,12.028L1.101,2.3l0.011,7.912l13.623,1.816L1.112,13.845 L1.101,21.757z"></path></svg>
+        </div>
+      </div>
+
+
+    </div>
+  }
+
+
+</div>
