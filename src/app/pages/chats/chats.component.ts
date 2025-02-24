@@ -63,6 +63,8 @@ export class ChatsComponent implements OnInit {
             this.chatService.getChatRoom(this.senderUser);
           }
         }
+        this.getLastTextMessage(item, user);
+        this.getLastMessageTimestamp(item, user);
         return user;
       });
 
@@ -109,9 +111,47 @@ export class ChatsComponent implements OnInit {
     this.messageControl.reset();
   }
 
-  handleSearch($event: string){
-    console.log('Parent:', $event);
+  getLastTextMessage(item:any, user: UserChatConfig){
+    let lastText= ''
+    this.chatService.getLastText(item).subscribe((res: any) => {
+      if(res){
+        lastText = res?.lastText ?? '';
+        user.text = lastText;
+      }
+
+    })
   }
+
+  getLastMessageTimestamp(item:any, user: UserChatConfig){
+    let lastMessageTime : any
+    this.chatService.getLastText(item).subscribe((res: any) => {
+      if(res){
+        lastMessageTime = res?.time;
+        const date = new Date(lastMessageTime.seconds * 1000);
+
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+
+        user.time = `${hours}:${minutes}`;
+      }
+
+    })
+  }
+
+
+
+  handleSearch(searchTerm: string) {
+    if (!searchTerm) {
+      this.getUsers();
+    } else {
+      // Filter the userChats based on searchTerm (by full name or last text)
+      this.userChats = this.userChats.filter(user =>
+        user.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.text.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+  }
+
 
 
 }

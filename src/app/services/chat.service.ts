@@ -1,7 +1,7 @@
 import { collection, Firestore, onSnapshot, query, where, doc, addDoc, updateDoc } from '@angular/fire/firestore';
 import { inject, Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { ChatRoom, Message } from '../interfaces/models/chat-room.interface';
 import { user } from '@angular/fire/auth';
 import { getDoc } from 'firebase/firestore';
@@ -100,6 +100,34 @@ export class ChatService {
 
 
   }
+
+  getLastText(user:any) {
+    const currentUserId = this.authService.getCurrentUser().uid ?? '';
+    const chatRoomCollection = collection(this.firestore, this.CHAT_ROOM);
+    const queryRef = query(chatRoomCollection, where('users', 'array-contains', user.userId));
+
+    return new Observable((observer) => {
+      return onSnapshot((queryRef) , async (snapShot) => {
+        if(snapShot.empty){
+          return observer.next(null);
+        }
+
+        const chatData = snapShot.docs.find((doc) =>
+          (doc.data() as ChatRoom).users.includes(currentUserId));
+
+        if(!chatData?.data()){
+          return observer.next(null);
+        }
+
+        const data: ChatRoom = {
+          chatRoomId: chatData.id, ...chatData.data()
+        } as ChatRoom
+
+        return observer.next({lastText: data.lastMessage, time: data.lastMessageTimestamp})
+      })
+    })
+  }
+
 
   }
 
